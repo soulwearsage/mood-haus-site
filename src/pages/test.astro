@@ -1,0 +1,20 @@
+---
+const API = import.meta.env.SPREADSHEET_API;
+let result = '';
+let rooms = [];
+
+try {
+  const res = await fetch(`${API}?sheet=rooms`, { redirect: 'follow' });
+  const text = await res.text();
+  result = text;
+  rooms = JSON.parse(text);
+} catch(e) {
+  result = 'ERROR: ' + e.message;
+}
+---
+<html>
+<body>
+<pre>{result}</pre>
+<p>件数: {rooms.length}</p>
+</body>
+</html>
