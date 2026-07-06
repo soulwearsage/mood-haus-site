@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const API = import.meta.env.SPREADSHEET_API;
+let rooms = [];
+
+try {
+  const res = await fetch(`${API}?sheet=rooms`);
+  rooms = await res.json();
+} catch(e) {
+  rooms = [];
+}
+
+export async function getStaticPaths() {
+  const API = import.meta.env.SPREADSHEET_API;
+  let rooms = [];
+  try {
+    const res = await fetch(`${API}?sheet=rooms`);
+    rooms = await res.json();
+  } catch(e) {
+    rooms = [];
+  }
+  return rooms.map(room => ({
+    params: { id: room.queueId },
+    props: { room },
+  }));
+}
+
+const { room } = Astro.props;
+---
+<Base title={room.plateNum + ' ' + room.setName} description={room.mjPrompt} ogImage={room.imageUrl}>
+
+  <!-- HERO -->
+  <div style="width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #E8E6E1;">
+    {room.imageUrl && (
+      <img src={room.imageUrl} alt={room.setName} style="width: 100%; height: 100%; object-fit: cover;" />
+    )}
+  </div>
+
+  <main style="max-width: 1100px; margin: 0 auto; padding: 60px 40px;">
+
+    <!-- PLATE INFO -->
+    <div style="display: flex; align-items: baseline; gap: 24px; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--rule);">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .1em; color: var(--text3);">{room.plateNum}</div>
+      <h1 style="font-family: 'Antonio', sans-serif; font-size: clamp(28px, 4vw, 48px); letter-spacing: .08em; text-transform: uppercase;">{room.setName}</h1>
+      <div style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3);">{room.bgName}</div>
+    </div>
+
+    <!-- SHOP THE ROOM -->
+    <div style="margin-bottom: 60px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: 24px;">Shop the Room</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--rule);">
+        {room.furniture.filter(f => f.name).map(f => (
+          <div style="background: var(--ivory); padding: 20px;">
+            {f.imageUrl && (
+              <div style="aspect-ratio: 1/1; overflow: hidden; background: #F0EEE9; margin-bottom: 12px;">
+                <img src={f.imageUrl} alt={f.name} style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" />
+              </div>
+            )}
+            {!f.imageUrl && (
+              <div style="aspect-ratio: 1/1; background: #F0EEE9; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 28px;">🪑</span>
+              </div>
+            )}
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px;">{f.category}</div>
+            <div style="font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; margin-bottom: 2px;">{f.name}</div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--text2); margin-bottom: 12px;">{f.brand}</div>
+            {f.affiliateUrl ? (
+              <a href={f.affiliateUrl} target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; padding: 8px; border: 1px solid var(--charcoal); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; transition: all .2s;">
+                Shop →
+              </a>
+            ) : (
+              <div style="display: block; text-align: center; padding: 8px; border: 1px solid var(--rule); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3);">
+                Coming Soon
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- AI PROMPT -->
+    <div style="background: #111; padding: 32px; margin-bottom: 60px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); margin-bottom: 16px;">AI Design Prompt</div>
+      <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.8; color: rgba(255,255,255,.7); white-space: pre-wrap;">{room.mjPrompt}</p>
+    </div>
+
+    <!-- BACK -->
+    <a href={import.meta.env.BASE_URL} style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3);">← Back to Collection</a>
+
+  </main>
+</Base>
