@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
-  const API = import.meta.env.SPREADSHEET_API;
+  const API = import.meta.env.PUBLIC_SPREADSHEET_API;
   let rooms = [];
   try {
     const res = await fetch(`${API}?sheet=rooms`, { redirect: 'follow' });

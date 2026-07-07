@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SPREADSHEET_API: ${{ secrets.SPREADSHEET_API }}
+      PUBLIC_SPREADSHEET_API: ${{ secrets.SPREADSHEET_API }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
