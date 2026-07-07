@@ -17,14 +17,16 @@ export async function getStaticPaths() {
 }
 
 const { room } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+// ローカル画像を優先（public/rooms/Q-001.jpg）
+const localImage = `${base}rooms/${room.queueId}.jpg`;
 ---
-<Base title={room.plateNum + ' ' + room.setName} description={room.mjPrompt} ogImage={room.imageUrl}>
+<Base title={room.plateNum + ' ' + room.setName} description={room.mjPrompt} ogImage={localImage}>
 
   <!-- HERO -->
   <div style="width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #E8E6E1;">
-    {room.imageUrl && (
-      <img src={room.imageUrl} alt={room.setName} style="width: 100%; height: 100%; object-fit: cover;" />
-    )}
+    <img src={localImage} alt={room.setName} style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
   </div>
 
   <main style="max-width: 1100px; margin: 0 auto; padding: 60px 40px;">
@@ -75,7 +77,7 @@ const { room } = Astro.props;
     </div>
 
     <!-- BACK -->
-    <a href={import.meta.env.BASE_URL} style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3);">← Back to Collection</a>
+    <a href={base} style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3);">← Back to Collection</a>
 
   </main>
 </Base>
