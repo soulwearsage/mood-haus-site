@@ -1,50 +1,28 @@
 ---
 import Base from '../layouts/Base.astro';
-
-const API = import.meta.env.PUBLIC_SPREADSHEET_API;
-let rooms = [];
-
-try {
-  const res = await fetch(`${API}?sheet=rooms`, { redirect: 'follow', headers: { 'User-Agent': 'Mozilla/5.0' } });
-  rooms = await res.json();
-} catch(e) {
-  rooms = [];
-}
+import roomsData from '../data/rooms.json';
+const base = import.meta.env.BASE_URL;
 ---
 <Base title="Collection">
-  <main style="max-width: 1200px; margin: 0 auto; padding: 60px 40px;">
-    
-    <div style="margin-bottom: 60px;">
-      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px;">The Mood Haus Collection</div>
-      <h1 style="font-family: 'Antonio', sans-serif; font-size: clamp(36px, 5vw, 64px); letter-spacing: .06em; text-transform: uppercase; line-height: 1;">Interior Design<br>for Every Home</h1>
+  <div class="wrap" style="padding-top:var(--s8);">
+    <div style="margin-bottom:var(--s7);">
+      <div class="sec-eye">The Mood Haus Collection</div>
+      <h1 class="sec-title" style="font-size:clamp(36px,5vw,64px);">Interior Design<br>for Every Home</h1>
     </div>
-
-    {rooms.length === 0 && (
-      <div style="text-align: center; padding: 80px 0; color: var(--text3); font-family: 'IBM Plex Mono', monospace; font-size: 12px;">
-        No rooms published yet.
-      </div>
+    {roomsData.length === 0 && (
+      <div style="text-align:center;padding:80px 0;color:var(--ink-3);font-family:var(--f-mono);font-size:12px;">No rooms published yet.</div>
     )}
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2px;">
-      {rooms.map(room => (
-        <a href={`room/${room.queueId}`} style="display: block; position: relative; overflow: hidden; background: #E8E6E1; aspect-ratio: 4/3;">
-          {room.imageUrl ? (
-            <img 
-              src={room.imageUrl} 
-              alt={room.setName}
-              style="width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease;"
-              loading="lazy"
-            />
-          ) : (
-            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text3); font-family: 'IBM Plex Mono', monospace; font-size: 11px;">No image</div>
-          )}
-          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,.6));">
-            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .1em; color: rgba(255,255,255,.6); margin-bottom: 4px;">{room.plateNum}</div>
-            <div style="font-family: 'Antonio', sans-serif; font-size: 18px; letter-spacing: .06em; text-transform: uppercase; color: #fff;">{room.setName}</div>
+    <div class="room-grid">
+      {roomsData.map(room => (
+        <a href={`${base}room/${room.queueId}/`} class="room-card">
+          <div class="room-img">
+            <img src={`${base}rooms/${room.queueId}.jpg`} alt={room.setName} loading="lazy" onerror="this.outerHTML='<div class=ph></div>'" />
+            <div class="room-pl">{room.plateNum}</div>
           </div>
+          <div class="room-title">{room.setName}</div>
+          <div class="room-sub">{room.bgName}</div>
         </a>
       ))}
     </div>
-
-  </main>
+  </div>
 </Base>
