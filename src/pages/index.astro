@@ -5,7 +5,7 @@ const API = import.meta.env.PUBLIC_SPREADSHEET_API;
 let rooms = [];
 
 try {
-  const res = await fetch(`${API}?sheet=rooms`, { redirect: 'follow' });
+  const res = await fetch(`${API}?sheet=rooms`, { redirect: 'follow', headers: { 'User-Agent': 'Mozilla/5.0' } });
   rooms = await res.json();
 } catch(e) {
   rooms = [];
