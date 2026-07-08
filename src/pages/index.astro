@@ -4,6 +4,9 @@ import roomsData from '../data/rooms.json';
 const base = import.meta.env.BASE_URL;
 ---
 <Base title="Collection">
+  <style is:global>
+    .room-img{aspect-ratio:4/3 !important;}
+  </style>
   <div class="wrap" style="padding-top:var(--s8);">
     <div style="margin-bottom:var(--s7);">
       <div class="sec-eye">The Mood Haus Collection</div>
@@ -20,7 +23,6 @@ const base = import.meta.env.BASE_URL;
             <div class="room-pl">{room.plateNum}</div>
           </div>
           <div class="room-title">{room.setName}</div>
-          <div class="room-sub">{room.bgName}</div>
         </a>
       ))}
     </div>
